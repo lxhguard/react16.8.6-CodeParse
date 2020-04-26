@@ -84,10 +84,15 @@ if (__DEV__) {
 /**
  * Fiber Node
  * @instance 在 Virtual Dom 基础上增加的一层数据结构
- * @description (1) 16 之前是递归遍历， 16 以后(Fiber架构) 是循环遍历；
- *                  配合 requestIdleCallback API, 实现任务拆分、 中断与恢复。
- * 每一个 Fiber Node 节点与 Virtual Dom 一一对应， 所有 Fiber Node 连接起来形成 Fiber tree,
- * 是个单链表树结构
+ * @description (1) 16 之前是递归遍历（不存在Fiber）， 16 以后(Fiber架构) 是循环遍历；
+ *                  Fiber 配合 requestIdleCallback API, 实现任务拆分、 中断与恢复。
+ * 每一个 Fiber Node 与 Virtual Dom Node 一一对应，
+ * 所有 Fiber Node 连接起来形成 Fiber tree,是个单链表树结构
+ *
+ * @file 我们应该关注的三个属性：
+ * return属性值为父节点，
+ * child属性值为第一个子节点，
+ * sibling属性值为第一个兄弟节点
  */
 // A Fiber is work on a Component that needs to be done or was done. There can
 // be more than one per component.
