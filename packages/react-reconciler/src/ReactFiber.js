@@ -83,8 +83,9 @@ if (__DEV__) {
 
 /**
  * Fiber Node
- * @instance 是在 react 生成的 Virtual Dom 基础上增加的一层数据结构
- * @description 将递归遍历转变成循环遍历， 配合 requestIdleCallback API, 实现任务拆分、 中断与恢复。
+ * @instance 在 Virtual Dom 基础上增加的一层数据结构
+ * @description (1) 16 之前是递归遍历， 16 以后(Fiber架构) 是循环遍历；
+ *                  配合 requestIdleCallback API, 实现任务拆分、 中断与恢复。
  * 每一个 Fiber Node 节点与 Virtual Dom 一一对应， 所有 Fiber Node 连接起来形成 Fiber tree,
  * 是个单链表树结构
  */
