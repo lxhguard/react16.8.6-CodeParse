@@ -20,10 +20,17 @@ Fiber = {
 
   /**
    * 在workLoop的调用函数beginWork中会用到，
-   * 用于区分函数组件、 类组件、 懒加载组件等的标识位
+   * 用于区分原生元素、函数组件、 类组件、 懒加载组件等的标识位
    */
   // Tag identifying the type of fiber.
   tag: WorkTag,
+
+  /**
+   * 如果该Fiber Node是一个原生节点，
+   * 则 stateNode 指向真实DOM元素。
+   */
+  // The local state associated with this fiber.
+  stateNode: any,
 }
 
 /**
