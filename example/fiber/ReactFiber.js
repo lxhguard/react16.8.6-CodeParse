@@ -26,7 +26,7 @@ Fiber = {
   tag: WorkTag,
 
   /**
-   * 如果该Fiber Node是一个原生节点，
+   * 如果该Fiber Node是一个原生节点(host)，
    * 则 stateNode 指向真实DOM元素。
    */
   // The local state associated with this fiber.
