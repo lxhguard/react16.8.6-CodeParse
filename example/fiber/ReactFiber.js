@@ -1,8 +1,10 @@
 // 两部分组成： Fiber抽象接口 VDOM实例  Fiber实例
 /**
  * @interface Fiber Node Structure
+ * @desc export type Fiber = {}
+ * @alias Fiber = {}
  */
-export type Fiber = {
+Fiber = {
   // The resolved function/class/ associated with this fiber.
   type: any,
 
@@ -15,6 +17,13 @@ export type Fiber = {
   // Singly Linked List Tree Structure.
   child: Fiber | null,
   sibling: Fiber | null,
+
+  /**
+   * 在workLoop的调用函数beginWork中会用到，
+   * 用于区分函数组件、 类组件、 懒加载组件等的标识位
+   */
+  // Tag identifying the type of fiber.
+  tag: WorkTag,
 }
 
 /**
@@ -28,7 +37,7 @@ export type Fiber = {
  *
  * 16.0之前对VDOM树进行遍历，不可中断
  */
-let VDOM_root = {
+let example_VDOM_root = {
     key: 'A1',
     type:'div',
     children: [
@@ -54,7 +63,7 @@ let VDOM_root = {
  * 16.0之后对Fiber链表进行遍历，可中断可恢复
  * (对VDOM树进行前序遍历得到Fiber链表)
  */
-let Fiber_A1 = { type: 'div', key: 'A1' };
+let example_Fiber_A1 = { type: 'div', key: 'A1' };
 let B1 = { type: 'div', key: 'B1', return: A1 }
 let B2 = { type: 'div', key: 'B2', return: A1 }
 let C1 = { type: 'div', key: 'C1', return: B1 }
@@ -63,6 +72,6 @@ Fiber_A1.child = B1;
 B1.sibling = B2;
 B1.child = C1;
 C1.sibling = C2;
-const Fiber_root = Fiber_A1;
+const example_Fiber_root = example_Fiber_A1;
 
-export default Fiber_root;
+module.exports = example_Fiber_root;

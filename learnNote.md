@@ -28,4 +28,12 @@ Fiber Node 和 Virtual Dom Node 是一一对应的关系，Fiber树（单链表�
 
 ### (2)function workLoop(isYieldy)：packages/react-reconciler/src/ReactFiberScheduler.js
 
-### 
+setState()或者 首次render()时，会进入workLoop，生成新的Fiber Node单链表树结构。<br/>
+work可以理解为 单个执行单元（即Fiber Node） 的任务集合<br/>
+
+<b>主要涉及函数：</b> 
+- workLoop（先序遍历生成新的Fiber单链表树）：Fiber Node是work(任务)的最小执行单元。 <br/>
+
+### function beginWork(current,workInProgress,renderExpirationTime)：packages/react-reconciler/src/ReactFiberBeginWork.js
+
+处理传入的 Fiber Node <br/>
