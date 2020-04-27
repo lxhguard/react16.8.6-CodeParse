@@ -57,8 +57,9 @@ function performUnitOfWork(workInProgress){
 }
 
 /**
+ * 循环执行任务
  * 深度优先遍历 构建FIber树 入口
- * @param {*} isYieldy
+ * @param {boolean} isYieldy react是否要让出时间片
  */
 function workLoop(isYieldy) {
   /**
@@ -68,7 +69,7 @@ function workLoop(isYieldy) {
    *    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
    * @desc 存在下一个执行单元， 则指针移动到下一个执行单元
    */
-  if (!isYieldy) {
+  if (!isYieldy) { // react不需要让出时间片
     // Flush work without yielding
     while (nextUnitOfWork !== null) { // 存在下一个执行单元，则指针移动到下一个执行单元
       // A1 - B1 - C1 - C2 - B2
@@ -83,11 +84,14 @@ function workLoop(isYieldy) {
 }
 
 /**
- * 没有子节点时，遍历兄弟节点作为下一个执行单元。
- * 兄弟节点执行结束，向上回溯至根节点。
- * 向上回溯过程中，收集所有diff，准备进入commit阶段。
+ * 构建effectlist，（返回兄弟节点）
+ * @desc 没有子节点时，遍历兄弟节点作为下一个执行单元。（返回兄弟节点）
+ *        兄弟节点执行结束，向上回溯至根节点。
+ *        向上回溯过程中，收集所有diff(后序遍历收集有副作用的Fiber，组成effectlist)，准备进入commit阶段。
  * @param {Fiber} workInProgress 当前Fiber节点
- * @return {Fiber|null} next|null 返回下一个节点的单链表树结构
+ * @return {Fiber|null} next|null  返回当前Fiber节点的兄弟节点
+ *
+ * completeWork()通过tag调用相对应的更新方法， 返回第一个子节点
  */
 function completeUnitOfWork(workInProgress){
   // Attempt to complete the current unit of work, then move to the

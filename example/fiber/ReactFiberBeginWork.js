@@ -1,4 +1,14 @@
 /**
+ * 通过tag调用对应类型的更新方法
+ * 返回当前Fiber节点的第一个 Fiber Node 子节点
+ * 这些方法最后一行都是return workInProgress.child;
+ * @param {Fiber} workInProgress 当前Fiber节点
+ * @return {Fiber} workInProgress.child 当前Fiber节点的第一个儿子节点
+ */
+
+
+
+/**
  * 处理当前Fiber Node，自顶向下生成所有 Fiber Node（不包含兄弟节点），标记Diff：
  * @desc 通过Fiber.tag判断组件类型（class,function，懒加载等），调用对应的组件更新方法。
  * @param {Fiber|null} current 当前节点的类型alternate

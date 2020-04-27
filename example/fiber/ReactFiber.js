@@ -31,6 +31,20 @@ Fiber = {
    */
   // The local state associated with this fiber.
   stateNode: any,
+
+  /**
+   * 副作用标识
+   * render收集副作用：增加，删除，更新
+   */
+  // Effect
+  effectTag: SideEffectTag,
+
+  /**
+   * 指向 effectlist单链表 中的下一个effect
+   * @desc effectlist顺序与fiber顺序一样，但节点可能会少
+   */
+  // Singly linked list fast path to the next fiber with side-effects.
+  nextEffect: Fiber | null,
 }
 
 /**

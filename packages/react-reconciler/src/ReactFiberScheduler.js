@@ -9,7 +9,7 @@
 
 import type {Fiber} from './ReactFiber';
 import type {Batch, FiberRoot} from './ReactFiberRoot';
-import type {ExpirationTime} from './ReactFiberExpirationTime';
+import type {ExpirationTime} from './ReactFiberExpirationTime'; // 优先级。比较复杂的一个东西。
 import type {Interaction} from 'scheduler/src/Tracing';
 
 import {
@@ -156,6 +156,7 @@ import {
   resetStackAfterFatalErrorInDev,
 } from './ReactFiberStack';
 import {beginWork} from './ReactFiberBeginWork';
+// 通过tag调用相对应的更新方法，返回第一个子节点
 import {completeWork} from './ReactFiberCompleteWork';
 import {
   throwException,
@@ -1207,6 +1208,12 @@ function performUnitOfWork(workInProgress: Fiber): Fiber | null {
   return next;
 }
 
+/**
+ * 循环执行任务
+ * 深度优先遍历 构建FIber树 入口
+ * @param {boolean} isYieldy react是否要让出时间片
+ * @example 在renderRoot中被调用，传入false.
+ */
 function workLoop(isYieldy) {
   if (!isYieldy) {
     // Flush work without yielding
@@ -1523,7 +1530,7 @@ function renderRoot(root: FiberRoot, isYieldy: boolean): void {
 
   // Ready to commit.
   onComplete(root, rootWorkInProgress, expirationTime);
-}
+} // renderRoot
 
 function captureCommitPhaseError(sourceFiber: Fiber, value: mixed) {
   const expirationTime = Sync;

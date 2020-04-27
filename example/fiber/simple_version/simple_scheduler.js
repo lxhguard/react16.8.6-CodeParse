@@ -17,7 +17,7 @@ function performUnitOfWork(workInProgress) {
   // 当前传入参数（Fiber Node）的 下一个节点
   let next = beginWork(current, workInProgress, nextRenderExpirationTime);
 
-  if (next === null) {
+  if (next === null) { // 如果没有子节点，执行当前任务单元
     next = completeUnitOfWork(workInProgress);
   }
 
@@ -25,8 +25,9 @@ function performUnitOfWork(workInProgress) {
 }
 
 /**
+ * 循环执行任务
  * 深度优先遍历 构建FIber树 入口
- * @param {*} isYieldy
+ * @param {boolean} isYieldy react是否要让出时间片
  */
 function workLoop(isYieldy) {
   while (nextUnitOfWork !== null){
@@ -36,15 +37,19 @@ function workLoop(isYieldy) {
 }
 
 /**
- * 没有子节点时，遍历兄弟节点作为下一个执行单元。
- * 兄弟节点执行结束，向上回溯至根节点。
- * 向上回溯过程中，收集所有diff，准备进入commit阶段。
+ * 构建effectlist，（返回兄弟节点）
+ * @desc 没有子节点时，遍历兄弟节点作为下一个执行单元。（返回兄弟节点）
+ *        兄弟节点执行结束，向上回溯至根节点。
+ *        向上回溯过程中，收集所有diff(后序遍历收集有副作用的Fiber，组成effectlist)，准备进入commit阶段。
  * @param {Fiber} workInProgress 当前Fiber节点
- * @return {Fiber|null} next|null 返回下一个节点的单链表树结构
+ * @return {Fiber|null} next|null  返回当前Fiber节点的兄弟节点
+ *
+ * completeWork()通过tag调用相对应的更新方法， 返回第一个子节点
  */
 function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
   while (true) {
     const current = workInProgress.alternate;
+    // 当前节点的 父节点 和 兄弟节点
     const returnFiber = workInProgress.return;
     const siblingFiber = workInProgress.sibling;
 
@@ -78,6 +83,8 @@ function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
         return nextUnitOfWork;
       }
 
+      // 下面的两个if是构成effectlist的关键：从下往上挂载。
+      // （1）把当前Fiber节点的子节点effect挂在到当前Fiber的父节点。当前Fiber相当于一个中间变量，沟通其父亲和其儿子。
       if (
         returnFiber !== null &&
         // Do not append effects to parents if a sibling failed to complete
@@ -95,13 +102,18 @@ function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
           }
           returnFiber.lastEffect = workInProgress.lastEffect;
         }
+        // 当前Fiber节点的副作用标识位
         const effectTag = workInProgress.effectTag;
-        if (effectTag > PerformedWork) {
-          if (returnFiber.lastEffect !== null) {
+        // （2）把当前Fiber节点的effect挂在到其父节点上
+        if (effectTag > PerformedWork) { // 有副作用，收集effect
+          if (returnFiber.lastEffect !== null) { // 如果父节点的最后副作用指针有值
+            // 则effectlist中间部分使用nextEffect指针进行连接
             returnFiber.lastEffect.nextEffect = workInProgress;
           } else {
+            // 这里
             returnFiber.firstEffect = workInProgress;
           }
+          // 这里
           returnFiber.lastEffect = workInProgress;
         }
       }
@@ -118,7 +130,7 @@ function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
         // We've reached the root.
         return null;
       }
-    } else {
+    } else { // 无副作用
       if (enableProfilerTimer && workInProgress.mode & ProfileMode) {
         // Record the render duration for the fiber that errored.
         stopProfilerTimerIfRunningAndRecordDelta(workInProgress, false);

@@ -6,6 +6,13 @@
  *
  * @flow
  */
+/**
+ * 通过tag调用对应类型的更新方法
+ * 返回当前Fiber节点的第一个 Fiber Node 子节点
+ * 这些方法最后一行都是return workInProgress.child;
+ * @param {Fiber} workInProgress 当前Fiber节点
+ * @return {Fiber} workInProgress.child 当前Fiber节点的第一个儿子节点
+ */
 
 import type {ReactProviderType, ReactContext} from 'shared/ReactTypes';
 import type {Fiber} from './ReactFiber';
